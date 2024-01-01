@@ -17,7 +17,7 @@
   # that user. Note that the key is, at the time of writing, put in `/etc/ssh/authorized_keys.d`
   users.extraUsers.nixos.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSt9Z8Qdq068xj/ILVAMqmkVyUvKCSTsdaoehEZWRut rcmast3r1@gmail.com"
-
+    "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhMu3LzyGPjh0WkqV7kZYwA+Hyd2Bfc+1XQJ88HeU4A rcmast3r1@gmail.com"
   ];
 
   # bzip2 compression takes loads of time with emulation, skip it. Enable this if you're low

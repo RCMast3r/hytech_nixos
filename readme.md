@@ -11,3 +11,12 @@ install `qemu-user-static` package then in `/etc/nix/nix.conf` add:
 - to build the flake defined image: `nix build .#images.rpi4 --system aarch64-linux`
 
 
+TODO:
+- [ ] initialize CAN correctly (`networking.interfaces`)
+    - enable device tree overlay for spi CAN adapter
+    - nixos uses systemd for network setup instead of the ip tool
+    - https://wiki.archlinux.org/title/systemd-networkd
+    - https://pengutronix.de/en/blog/2022-02-04-initializing-can-interfaces-with-systemd-networkd.html
+    - https://www.freedesktop.org/software/systemd/man/latest/systemd.network.html#[CAN]%20Section%20Options
+    
+- [ ] set static ip for the pi and enable wireless networking for connecting

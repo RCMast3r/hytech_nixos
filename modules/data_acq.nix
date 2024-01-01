@@ -6,21 +6,17 @@ let
   # cfg is a typical convention.
   cfg = config.services.data_writer;
 in {
-  options.services.data_writer = {
-    enable = mkEnableOption "data writer service";
-    # greeter = mkOption {
-    #   type = types.str;
-    #   default = "world";
-    # };
-  };
 
   # Define what other settings, services and resources should be active IF
   # a user of this "hello.nix" module ENABLED this module 
   # by setting "services.hello.enable = true;".
-  config = mkIf cfg.enable {
+  config = {
+    # https://nixos.org/manual/nixos/stable/options.html search for systemd.services.<name>. to get list of all of the options for 
+    # new systemd services
     systemd.services.data_writer = {
       wantedBy = [ "multi-user.target" ];
-      After = [ "network.target" ];
+      serviceConfig.After = [ "network.target" ];
+      # https://www.freedesktop.org/software/systemd/man/latest/systemd.service.html serviceconfig
       serviceConfig.ExecStart =
         "${pkgs.py_data_acq_pkg}/bin/python3 ${pkgs.py_data_acq_pkg}/bin/data_acq_service.py";
       serviceConfig.ExecStop = "/bin/kill -SIGINT $MAINPID";
