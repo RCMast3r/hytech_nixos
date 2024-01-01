@@ -34,6 +34,7 @@
         
         ];
     };
+    
     nixosConfigurations.rpi3 = nixpkgs.lib.nixosSystem {
       modules = [ 
         "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"

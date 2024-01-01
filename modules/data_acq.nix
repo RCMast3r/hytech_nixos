@@ -1,5 +1,5 @@
 { lib, pkgs, config, ... }:
-with lib;                      
+with lib;
 let
   # Shorter name to access final settings a 
   # user of hello.nix module HAS ACTUALLY SET.
@@ -21,7 +21,10 @@ in {
     systemd.services.data_writer = {
       wantedBy = [ "multi-user.target" ];
       After = [ "network.target" ];
-      serviceConfig.ExecStart = "${pkgs.py_data_acq_pkg}/bin/python3 ${pkgs.py_data_acq_pkg}/bin/data_acq_service.py";
+      serviceConfig.ExecStart =
+        "${pkgs.py_data_acq_pkg}/bin/python3 ${pkgs.py_data_acq_pkg}/bin/data_acq_service.py";
+      serviceConfig.ExecStop = "/bin/kill -SIGINT $MAINPID";
+      serviceConfig.Restart = "on-failure";
     };
   };
 }
