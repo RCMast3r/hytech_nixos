@@ -5,14 +5,6 @@
     hytech_data_acq.url = "github:RCMast3r/data_acq";
   };
   outputs = { self, nixpkgs, hytech_data_acq }: rec {
-    configurator = { ... }: {
-      config = {
-        sdImage.compressImage = false;
-      };
-      options = {
-        services.data_writer.options.enable = true;
-      };
-    };
 
     shared_config = {
       nixpkgs.overlays = [ (hytech_data_acq.overlays.default) ];
@@ -42,7 +34,7 @@
         interfaces = [ "wlan0" ];
         networks = { "yo" = { psk = "11111111"; }; };
       };
-      
+
       networking.defaultGateway.address = "192.168.84.243";
       networking.interfaces.wlan0.ipv4.addresses = [{
         address = "192.168.84.69";
@@ -55,30 +47,48 @@
       services.timesyncd.enable = true;
       programs.git = {
         enable = true;
-        config= {
+        config = {
           user.name = "Ben Hall";
           user.email = "rcmast3r1@gmail.com";
-        
+
         };
       };
 
     };
-      
-    nixosConfigurations.rpi3_ontarget = nixpkgs.lib.nixosSystem {
-        
-     };
 
-    nixosConfigurations.rpi3 = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.rpi3_ontarget = nixpkgs.lib.nixosSystem {
       modules = [
-        "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
         ./modules/data_acq.nix
         (
-          configurator
+          { ... }: {
+            options = {
+              services.data_writer.options.enable = true;
+            };
+          }
         )
+
         (shared_config)
-      ];
+      ]
+        };
+
+      nixosConfigurations.rpi3 = nixpkgs.lib.nixosSystem {
+        modules = [
+          "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
+          ./modules/data_acq.nix
+          (
+            { ... }: {
+              config = {
+                sdImage.compressImage = false;
+              };
+              options = {
+                services.data_writer.options.enable = true;
+              };
+            }
+          )
+          (shared_config)
+        ];
+      };
+      images.rpi4 = nixosConfigurations.rpi4.config.system.build.sdImage;
+      images.rpi3 = nixosConfigurations.rpi3.config.system.build.sdImage;
     };
-    images.rpi4 = nixosConfigurations.rpi4.config.system.build.sdImage;
-    images.rpi3 = nixosConfigurations.rpi3.config.system.build.sdImage;
-  };
-}
+  }
