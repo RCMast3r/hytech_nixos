@@ -6,6 +6,14 @@
   };
   outputs = { self, nixpkgs, hytech_data_acq }: rec {
 
+
+    ontarget_options = {
+      boot.loader.grub.enable = false;
+      boot.loader.generic-extlinux-compatible.enable = true;
+      users.users.nixos.isNormalUser = true;
+      users.users.nixos.group = "nixos";
+      users.groups.nixos = { };
+    };
     shared_config = {
       nixpkgs.overlays = [ (hytech_data_acq.overlays.default) ];
 
@@ -59,7 +67,7 @@
     nixosConfigurations.rpi3_ontarget = nixpkgs.lib.nixosSystem {
       modules = [
         ./modules/data_acq.nix
-        # ./hw/hw-conf.nix
+        ./hw/hw-conf.nix
         (
           { ... }: {
             options = {
@@ -67,6 +75,8 @@
             };
           }
         )
+        (ontarget_options)
+
 
         (shared_config)
       ];
@@ -76,7 +86,6 @@
       modules = [
         "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
         ./modules/data_acq.nix
-        ./hw/hw-conf.nix
         (
           { ... }: {
             config = {
@@ -84,8 +93,7 @@
             };
             options = {
               services.data_writer.options.enable = true;
-              boot.loader.grub.enable = false;
-              boot.loader.generic-extlinux-compatible.enable = true;
+
             };
 
           }
