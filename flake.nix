@@ -59,6 +59,7 @@
     nixosConfigurations.rpi3_ontarget = nixpkgs.lib.nixosSystem {
       modules = [
         ./modules/data_acq.nix
+        # ./hw/hw-conf.nix
         (
           { ... }: {
             options = {
@@ -68,27 +69,31 @@
         )
 
         (shared_config)
-      ]
-        };
-
-      nixosConfigurations.rpi3 = nixpkgs.lib.nixosSystem {
-        modules = [
-          "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
-          ./modules/data_acq.nix
-          (
-            { ... }: {
-              config = {
-                sdImage.compressImage = false;
-              };
-              options = {
-                services.data_writer.options.enable = true;
-              };
-            }
-          )
-          (shared_config)
-        ];
-      };
-      images.rpi4 = nixosConfigurations.rpi4.config.system.build.sdImage;
-      images.rpi3 = nixosConfigurations.rpi3.config.system.build.sdImage;
+      ];
     };
-  }
+
+    nixosConfigurations.rpi3 = nixpkgs.lib.nixosSystem {
+      modules = [
+        "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
+        ./modules/data_acq.nix
+        ./hw/hw-conf.nix
+        (
+          { ... }: {
+            config = {
+              sdImage.compressImage = false;
+            };
+            options = {
+              services.data_writer.options.enable = true;
+              boot.loader.grub.enable = false;
+              boot.loader.generic-extlinux-compatible.enable = true;
+            };
+
+          }
+        )
+        (shared_config)
+      ];
+    };
+    images.rpi4 = nixosConfigurations.rpi4.config.system.build.sdImage;
+    images.rpi3 = nixosConfigurations.rpi3.config.system.build.sdImage;
+  };
+}
