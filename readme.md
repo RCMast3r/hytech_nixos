@@ -20,3 +20,4 @@ TODO:
     - https://www.freedesktop.org/software/systemd/man/latest/systemd.network.html#[CAN]%20Section%20Options
     
 - [ ] set static ip for the pi and enable wireless networking for connecting
+- [ ] setup copy-closure workflow for nixos iteration: https://discourse.nixos.org/t/copy-nix-store-to-another-machine/15549
