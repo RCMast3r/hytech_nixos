@@ -23,19 +23,30 @@
       systemd.services.sshd.wantedBy =
         nixpkgs.lib.mkOverride 40 [ "multi-user.target" ];
       services.openssh = { enable = true; };
-
+      
       virtualisation.docker.enable = true;
       users.users.nixos.extraGroups = [ "docker" ];
       virtualisation.docker.rootless = {
         enable = true;
         setSocketVariable = true;
       };
-
+      services.openssh.listenAddresses =[
+        {
+          addr = "0.0.0.0";
+          port = 22;
+        }
+        {
+          addr = ":";
+          port = 22;
+        }
+      ];
+      # users.extraUsers.nixos.password = "password";
       users.extraUsers.nixos.openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSt9Z8Qdq068xj/ILVAMqmkVyUvKCSTsdaoehEZWRut rcmast3r1@gmail.com"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhMu3LzyGPjh0WkqV7kZYwA+Hyd2Bfc+1XQJ88HeU4A rcmast3r1@gmail.com"
       ];
-
+      networking.enableIPv6 = true;
+      # users.extraUsers.nixos.openssh.extraConfig = "AddressFamily = any";
       # networking.hostname = "hytech-pi";
       networking.wireless = {
         enable = true;
@@ -43,9 +54,9 @@
         networks = { "yo" = { psk = "11111111"; }; };
       };
 
-      networking.defaultGateway.address = "192.168.84.243";
+      # networking.defaultGateway.address = "192.168.84.243";
       networking.interfaces.wlan0.ipv4.addresses = [{
-        address = "192.168.84.69";
+        address = "192.168.143.69";
         prefixLength = 24;
       }];
       systemd.services.wpa_supplicant.wantedBy =
@@ -76,13 +87,12 @@
           }
         )
         (ontarget_options)
-
-
         (shared_config)
       ];
     };
 
     nixosConfigurations.rpi3 = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux"; 
       modules = [
         "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
         ./modules/data_acq.nix
