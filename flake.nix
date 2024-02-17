@@ -5,8 +5,6 @@
     hytech_data_acq.url = "github:RCMast3r/data_acq";
   };
   outputs = { self, nixpkgs, hytech_data_acq }: rec {
-
-
     ontarget_options = {
       boot.loader.grub.enable = false;
       boot.loader.generic-extlinux-compatible.enable = true;
@@ -48,6 +46,7 @@
       networking.enableIPv6 = true;
       # users.extraUsers.nixos.openssh.extraConfig = "AddressFamily = any";
       # networking.hostname = "hytech-pi";
+      networking.firewall.enable = true;
       networking.wireless = {
         enable = true;
         interfaces = [ "wlan0" ];
