@@ -1,0 +1,109 @@
+/*
+ * Device tree overlay for mcp251x on any spi interface by Kristian Sloth Lauszus.
+ * Should be used with the "spi0-4cs" overlay.
+ */
+
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2835";
+
+    /* disable spi-dev for spi0.0 if used */
+    fragment@0 {
+        target = <&spidev0>;
+        __dormant__ {
+            status = "disabled";
+        };
+    };
+
+    /* disable spi-dev for spi0.1 if used */
+    fragment@1 {
+        target = <&spidev1>;
+        __dormant__ {
+            status = "disabled";
+        };
+    };
+
+    /* disable spi-dev for spi0.2 if used */
+    fragment@2 {
+        target-path = "spi0/spidev@2";
+        __dormant__ {
+            status = "disabled";
+        };
+    };
+
+    /* disable spi-dev for spi0.3 if used */
+    fragment@3 {
+        target-path = "spi0/spidev@3";
+        __dormant__ {
+            status = "disabled";
+        };
+    };
+
+    /* the interrupt pin of the can-controller */
+    fragment@4 {
+        target = <&gpio>;
+        __overlay__ {
+            mcp2515_pins: mcp2515_pins {
+                brcm,pins = <25>;
+                brcm,function = <0>; /* input */
+            };
+        };
+    };
+
+    /* the clock/oscillator of the can-controller */
+    fragment@5 {
+        target-path = "/";
+        __overlay__ {
+            /* external oscillator of mcp2515 on spi0 */
+            clk_mcp2515_osc: clk_mcp2515_osc {
+                compatible = "fixed-clock";
+                #clock-cells = <0>;
+                clock-frequency  = <16000000>;
+            };
+        };
+    };
+
+    /* the spi config of the can-controller itself binding everything together */
+    fragment@6 {
+        target = <&spi0>;
+        __overlay__ {
+            /* needed to avoid dtc warning */
+            #address-cells = <1>;
+            #size-cells = <0>;
+            mcp2515: mcp2515@0 {
+                reg = <0>;
+                compatible = "microchip,mcp2515";
+                pinctrl-names = "default";
+                pinctrl-0 = <&mcp2515_pins>;
+                spi-max-frequency = <10000000>;
+                interrupt-parent = <&gpio>;
+                interrupts = <25 8>; /* IRQ_TYPE_LEVEL_LOW */
+                clocks = <&clk_mcp2515_osc>;
+            };
+        };
+    };
+
+    __overrides__ {
+        spi0-0 = <0>,"+0", /* enable fragment@0 */
+                 <&mcp2515>,"reg:0=0",
+                 <&mcp2515_pins>,"name=mcp2515_spi0_0_pins",
+                 <&clk_mcp2515_osc>,"name=mcp2515-spi0-0-osc";
+        spi0-1 = <0>,"+1", /* enable fragment@1 */
+                 <&mcp2515>,"reg:0=1",
+                 <&mcp2515_pins>,"name=mcp2515_spi0_1_pins",
+                 <&clk_mcp2515_osc>,"name=mcp2515-spi0-1-osc";
+        spi0-2 = <0>,"+2", /* enable fragment@2 */
+                 <&mcp2515>,"reg:0=2",
+                 <&mcp2515_pins>,"name=mcp2515_spi0_2_pins",
+                 <&clk_mcp2515_osc>,"name=mcp2515-spi0-2-osc";
+        spi0-3 = <0>,"+3", /* enable fragment@3 */
+                 <&mcp2515>,"reg:0=3",
+                 <&mcp2515_pins>,"name=mcp2515_spi0_3_pins",
+                 <&clk_mcp2515_osc>,"name=mcp2515-spi0-3-osc";
+        oscillator = <&clk_mcp2515_osc>,"clock-frequency:0";
+        spimaxfrequency = <&mcp2515>,"spi-max-frequency:0";
+        interrupt = <&mcp2515_pins>,"brcm,pins:0",<&mcp2515>,"interrupts:0";
+    };
+};

@@ -10,7 +10,10 @@ install `qemu-user-static` package then in `/etc/nix/nix.conf` add:
 
 - to build locally with the copy-closure workflow: 
 
-1. `nix build .#nixosConfigurations.rpi3.config.system.build.toplevel --system aarch64-linux`
+1. build with either
+    - `nix build .#nixosConfigurations.rpi3.config.system.build.toplevel --system aarch64-linux`
+or
+    - `nix build .#nixosConfigurations.rpi4.config.system.build.toplevel --system aarch64-linux` for the pi 4
 2. `nix-copy-closure --to nixos@192.168.143.69 result/` (will have store path as part of output to switch to)
 3. (ssh into pi)
 4. `sudo /nix/store/<hash>-nixos-system-<version>/bin/switch-to-configuration switch`
