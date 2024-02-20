@@ -1,24 +1,24 @@
 {
   description = "Build image";
+  nixConfig = {
+    extra-substituters = [ "https://raspberry-pi-nix.cachix.org" ];
+    extra-trusted-public-keys = [
+      "raspberry-pi-nix.cachix.org-1:WmV2rdSangxW0rZjY/tBvBDSaNFQ3DyEQsVw8EvHn9o="
+    ];
+  };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/8bf65f17d8070a0a490daf5f1c784b87ee73982c";
     hytech_data_acq.url = "github:RCMast3r/data_acq";
+    raspberry-pi-nix.url = "github:tstat/raspberry-pi-nix";
 
   };
-  outputs = { self, nixpkgs, hytech_data_acq }: rec {
+  outputs = { self, nixpkgs, hytech_data_acq, raspberry-pi-nix }: rec {
     ontarget_options = {
       boot.loader.grub.enable = false;
       boot.loader.generic-extlinux-compatible.enable = true;
       users.users.nixos.isNormalUser = true;
       users.users.nixos.group = "nixos";
       users.groups.nixos = { };
-    };
-    tcu_config = 
-    {
-      boot.kernelModules = [ "spi-bcm2835" "can-dev" "can-raw" "mcp251x" ];
-      boot.kernelParams = [ "dtoverlay=mcp2515-can0,oscillator=16000000,interrupt=25" ];
-
-
     };
     shared_config = {
       nixpkgs.overlays = [ (hytech_data_acq.overlays.default) ];
@@ -97,10 +97,59 @@
       };
     };
 
+    pi4_config = { pkgs, lib, ... }:
+      {
+        users.users.nixos.group = "nixos";
+        users.users.root.initialPassword = "root";
+        users.groups.nixos = { };
+        users.users.nixos.isNormalUser = true;
+        hardware = {
+          bluetooth.enable = true;
+          raspberry-pi = {
+            config = {
+              all = {
+                base-dt-params = {
+                  #           # enable autoprobing of bluetooth driver
+                  #           # https://github.com/raspberrypi/linux/blob/c8c99191e1419062ac8b668956d19e788865912a/arch/arm/boot/dts/overlays/README#L222-L224
+                  krnbt = {
+                    enable = true;
+                    value = "on";
+                  };
+                  spi = {
+                    enable = true;
+                    value = "on";
+                  };
+                };
+                dt-overlays = {
+                  spi-bcm2837 = {
+                    enable = true;
+                    params = { };
+                  };
+                  # TODO change this as needed
+                  mcp2515-can0 = {
+                    enable = true;
+                    params = {
+                      oscillator =
+                        {
+                          enable = true;
+                          value = "16000000";
+                        };
+                      interrupt = {
+                        enable = true;
+                        value = "25"; # this is the individual gpio number for the interrupt of the spi boi
+                      };
+                    };
+                  };
+                };
+              };
+            };
+          };
+        };
+      };
+    # shoutout to https://github.com/tstat/raspberry-pi-nix absolute goat
     nixosConfigurations.rpi4 = nixpkgs.lib.nixosSystem {
       system = "aarch64-linux";
       modules = [
-        "${nixpkgs}/nixos/modules/installer/sd-card/sd-image-aarch64-installer.nix"
         ./modules/data_acq.nix
         (
           { pkgs, ... }: {
@@ -117,7 +166,8 @@
           }
         )
         (shared_config)
-        (tcu_config )
+        raspberry-pi-nix.nixosModules.raspberry-pi
+        pi4_config
       ];
     };
 
@@ -142,5 +192,6 @@
     };
     images.rpi4 = nixosConfigurations.rpi4.config.system.build.sdImage;
     images.rpi3 = nixosConfigurations.rpi3.config.system.build.sdImage;
+    defaultPackage.aarch64-linux = nixosConfigurations.rpi4.config.system.build.toplevel;
   };
 }

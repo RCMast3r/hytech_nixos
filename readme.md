@@ -1,6 +1,7 @@
 pre-reqs:
 
 - for non-nixOs systems that have the nix package manager installed:
+- enable nix flakes
 
 install `qemu-user-static` package then in `/etc/nix/nix.conf` add:
 `extra-platforms = aarch64-linux arm-linux` and restart `nix-daemon.service`
@@ -31,4 +32,12 @@ TODO:
 - [ ] set static ip for the pi and enable wireless networking for connecting
 - [ ] setup copy-closure workflow for nixos iteration: https://discourse.nixos.org/t/copy-nix-store-to-another-machine/15549
 
+notes:
 
+pushing to cachix (via emulated aarch64-linux):
+(after following the registration steps for pushing)
+```
+nix build --system aarch64-linux --json \
+  | jq -r '.[].outputs | to_entries[].value' \
+  | cachix push rcmast3r
+```
