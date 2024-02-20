@@ -7,7 +7,7 @@
     ];
   };
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/8bf65f17d8070a0a490daf5f1c784b87ee73982c";
     hytech_data_acq.url = "github:RCMast3r/data_acq";
     raspberry-pi-nix.url = "github:tstat/raspberry-pi-nix";
 
@@ -104,6 +104,7 @@
         users.groups.nixos = { };
         users.users.nixos.isNormalUser = true;
         hardware = {
+          bluetooth.enable = true;
           raspberry-pi = {
             config = {
               all = {

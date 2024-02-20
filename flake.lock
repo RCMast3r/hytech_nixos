@@ -69,11 +69,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1708145183,
-        "narHash": "sha256-JtdwX+BcU6hSd+8YTtYyz9abU8aVIP0FfRInb0yQcYM=",
+        "lastModified": 1708416322,
+        "narHash": "sha256-mE0BoEBKiYNu1uvVshObp0O8PFGHb2rtmN7FLz4EnG8=",
         "owner": "RCMast3r",
         "repo": "data_acq",
-        "rev": "6f56aa70f63e65776e6d5a632f41a8b9565de0d1",
+        "rev": "c4617df030756d0803460d5a6bb1410e41baf107",
         "type": "github"
       },
       "original": {
@@ -335,17 +335,17 @@
     },
     "nixpkgs_8": {
       "locked": {
-        "lastModified": 1708294118,
-        "narHash": "sha256-evZzmLW7qoHXf76VCepvun1esZDxHfVRFUJtumD7L2M=",
+        "lastModified": 1705458851,
+        "narHash": "sha256-uQvEhiv33Zj/Pv364dTvnpPwFSptRZgVedDzoM+HqVg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "e0da498ad77ac8909a980f07eff060862417ccf7",
+        "rev": "8bf65f17d8070a0a490daf5f1c784b87ee73982c",
         "type": "github"
       },
       "original": {
         "owner": "NixOS",
-        "ref": "nixos-23.11",
         "repo": "nixpkgs",
+        "rev": "8bf65f17d8070a0a490daf5f1c784b87ee73982c",
         "type": "github"
       }
     },
@@ -542,6 +542,7 @@
     "u-boot-src": {
       "flake": false,
       "locked": {
+        "lastModified": 1704728268,
         "narHash": "sha256-0Da7Czy9cpQ+D5EICc3/QSZhAdCBsmeMvBgykYhAQFw=",
         "type": "tarball",
         "url": "https://ftp.denx.de/pub/u-boot/u-boot-2024.01.tar.bz2"
