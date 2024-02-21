@@ -96,6 +96,15 @@
       };
     };
 
+    can_config = {
+      networking.can.enable = true;
+
+      networking.can.interfaces = {
+        can0 = {
+          bitrate = 500000;
+        };
+      };
+    };
     pi4_config = { pkgs, lib, ... }:
       {
         nix.settings.require-sigs = false;
@@ -153,6 +162,7 @@
       system = "aarch64-linux";
       modules = [
         ./modules/data_acq.nix
+        ./modules/can_network.nix
         (
           { pkgs, ... }: {
             config = {
@@ -164,9 +174,12 @@
             options = {
               services.data_writer.options.enable = true;
             };
+            
+
 
           }
         )
+        (can_config)
         (shared_config)
         raspberry-pi-nix.nixosModules.raspberry-pi
         pi4_config
