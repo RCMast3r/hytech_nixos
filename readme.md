@@ -22,15 +22,15 @@ or
 
 
 TODO:
-- [ ] initialize CAN correctly (`networking.interfaces`)
+- [x] initialize CAN correctly (`networking.interfaces`)
     - enable device tree overlay for spi CAN adapter
     - nixos uses systemd for network setup instead of the ip tool
     - https://wiki.archlinux.org/title/systemd-networkd
     - https://pengutronix.de/en/blog/2022-02-04-initializing-can-interfaces-with-systemd-networkd.html
     - https://www.freedesktop.org/software/systemd/man/latest/systemd.network.html#[CAN]%20Section%20Options
     
-- [ ] set static ip for the pi and enable wireless networking for connecting
-- [ ] setup copy-closure workflow for nixos iteration: https://discourse.nixos.org/t/copy-nix-store-to-another-machine/15549
+- [x] set static ip for the pi and enable wireless networking for connecting
+- [x] setup copy-closure workflow for nixos iteration: https://discourse.nixos.org/t/copy-nix-store-to-another-machine/15549
 
 notes:
 
