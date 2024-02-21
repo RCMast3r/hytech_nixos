@@ -13,13 +13,7 @@
 
   };
   outputs = { self, nixpkgs, hytech_data_acq, raspberry-pi-nix }: rec {
-    ontarget_options = {
-      boot.loader.grub.enable = false;
-      boot.loader.generic-extlinux-compatible.enable = true;
-      users.users.nixos.isNormalUser = true;
-      users.users.nixos.group = "nixos";
-      users.groups.nixos = { };
-    };
+    
     shared_config = {
       nixpkgs.overlays = [ (hytech_data_acq.overlays.default) ];
 
@@ -114,6 +108,12 @@
         users.users.nixos.extraGroups = [ "wheel" ];
         users.groups.nixos = { };
         users.users.nixos.isNormalUser = true;
+
+        system.activationScripts.createRecordingsDir = lib.stringAfter [ "users" ] ''
+          mkdir -p /home/nixos/recordings
+          chown nixos:users /home/nixos/recordings
+        '';
+
         hardware = {
           bluetooth.enable = true;
           raspberry-pi = {
