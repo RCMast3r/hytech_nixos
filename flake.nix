@@ -53,7 +53,7 @@
       networking.useDHCP = false;
       # users.extraUsers.nixos.openssh.extraConfig = "AddressFamily = any";
       # networking.hostname = "hytech-pi";
-      networking.firewall.enable = true;
+      networking.firewall.enable = false;
       networking.wireless = {
         enable = true;
         interfaces = [ "wlan0" ];
