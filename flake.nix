@@ -46,7 +46,6 @@
           port = 22;
         }
       ];
-      # users.extraUsers.nixos.password = "password";
       users.extraUsers.nixos.openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJSt9Z8Qdq068xj/ILVAMqmkVyUvKCSTsdaoehEZWRut rcmast3r1@gmail.com"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPhMu3LzyGPjh0WkqV7kZYwA+Hyd2Bfc+1XQJ88HeU4A rcmast3r1@gmail.com"
@@ -99,8 +98,11 @@
 
     pi4_config = { pkgs, lib, ... }:
       {
+        nix.settings.require-sigs = false;
         users.users.nixos.group = "nixos";
         users.users.root.initialPassword = "root";
+        users.users.nixos.password = "nixos";
+        users.users.nixos.extraGroups = [ "wheel" ];
         users.groups.nixos = { };
         users.users.nixos.isNormalUser = true;
         hardware = {
@@ -121,7 +123,7 @@
                   };
                 };
                 dt-overlays = {
-                  spi-bcm2837 = {
+                  spi-bcm2835 = {
                     enable = true;
                     params = { };
                   };
@@ -136,7 +138,7 @@
                         };
                       interrupt = {
                         enable = true;
-                        value = "25"; # this is the individual gpio number for the interrupt of the spi boi
+                        value = "16"; # this is the individual gpio number for the interrupt of the spi boi
                       };
                     };
                   };
