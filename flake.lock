@@ -69,11 +69,11 @@
         "utils": "utils_6"
       },
       "locked": {
-        "lastModified": 1708538853,
-        "narHash": "sha256-h4qPoXBhmkip46gc4IHv1aEGmIbQhR3zBp19gJ3EC80=",
+        "lastModified": 1708541689,
+        "narHash": "sha256-G3WtqSCrbAp3SWZI9T2MHfZ/Bq2q41CNSeZrDvGSUZg=",
         "owner": "RCMast3r",
         "repo": "data_acq",
-        "rev": "1f2bcf66e4969ad3cdeab27a2b8fa2b7ad070aea",
+        "rev": "4e92293cb712b34f2534edce2932eb8b5c57ca0d",
         "type": "github"
       },
       "original": {
